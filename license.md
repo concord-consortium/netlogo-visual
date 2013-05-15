@@ -17,11 +17,7 @@ are in the specific folders included in the `src/vendor/` directory.
 
 Here is a list of projects and resources included in the in the `vendor/` directory and licenses:
 
-1.  [jQuery](https://github.com/jquery/jquery): dual-licensed under [MIT](http://www.opensource.org/licenses/MIT)
-    and [GPL v2.0](http://www.opensource.org/licenses/GPL-2.0).
-2.  [jQuery-UI](https://github.com/jquery/jquery-ui): dual-licensed under [MIT](http://www.opensource.org/licenses/MIT)
-    and [GPL v2.0](http://www.opensource.org/licenses/GPL-2.0).
-3. [Codemirror2](https://github.com/marijnh/CodeMirror2): [MIT](http://www.opensource.org/licenses/MIT)
+1. [Codemirror2](https://github.com/marijnh/CodeMirror2): [MIT](http://www.opensource.org/licenses/MIT)
     Codemirror2 includes a number of modules from third parties. All of the modules are licensed under either the MIT or BSD
     license except for the following which are excluded during the Make process where resources from `src/vendor/` are
     generated and copied to `server/public/vendor/`.
