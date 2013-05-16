@@ -2003,6 +2003,19 @@ to update-inquiry-summary [ data-series ]
   data-export:update-inquiry-summary data-series
 end
 
+;;;
+;;; To test in NetLogo:
+;;;
+;;; After running the model call the method data-export:make-model-data:
+;;;
+;;;   data-export:make-model-data
+;;;
+;;; This will update the global variable: data-export:model-data
+;;;
+;;; Now print data-export:model-data which contains the JSON data available for export:
+;;;
+;;;   print data-export:model-data
+;;;
 
 ;;;
 ;;; end of data-export methods
