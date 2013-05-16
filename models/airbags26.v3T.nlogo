@@ -1931,7 +1931,7 @@ to setup-data-export
   let student-inputs [
     [ "Goal" "categorical" ] ]
   let model-information [
-    [ "airbags" "airbags.v19b-include-modular.nlogo" "v19b-include-modular" ] ]
+    [ "airbags" "airbags26.v3T.nlogo" "26.v3T" ] ]
   let time-series-data [
     [ "Time" "s" 0 0.1 ]
     [ "Position" "m" 0 0.6 ]
