@@ -1961,7 +1961,7 @@ end
 ;;;
 
 to update-data-series [ data-series ]
-  data-export:update-data-series data-series
+  ;;; data-export:update-data-series data-series
 end
 
 ;;;
