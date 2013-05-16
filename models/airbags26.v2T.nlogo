@@ -1922,7 +1922,8 @@ to setup-data-export
     [ "Airbag size" "m" 0 0.5 true ]
     [ "Time to fill bag" "s" 0.01 0.05 true ] ]
   let representational-inputs [
-    [ "Slow Motion" "categorical" [ "true" "false" ] true ] ]
+    [ "Slow Motion" "categorical" [ "true" "false" ] true ]
+    [ "Y Axis" "categorical" [ "Position" "Velocity" ] true ] ]
   let computational-outputs [
     [ "Maximum acceleration" "g" 0 200 true ]
     [ "Dummy Survival" "categorical" [ "Yes" "No" "Maybe"] true ] ]
@@ -1947,7 +1948,7 @@ end
 
 to update-run-series
   let computational-inputs    ( list distance-to-steering-wheel car-speed airbag-size time-to-fill-bag )
-  let representational-inputs ( list slow-mo? )
+  let representational-inputs ( list slow-mo? pick-y-axis )
   let computational-outputs   ( list a-max-g dummy-status )
   let student-inputs          ( list the-question )
   let run-series-data ( list computational-inputs representational-inputs computational-outputs student-inputs )
