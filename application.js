@@ -28,8 +28,8 @@ var ROOT = "",
       viewType,
       dgPaylod, dgUrl,
       appletString, applet,
-      nl_obj_panel, nl_obj_workspace, nl_obj_world,
-      nl_obj_program, nl_obj_observer, nl_obj_globals,
+      nlObjPanel, nlObjWorkspace, nlObjWorld,
+      nlObjProgram, nlObjObserver, nlObjGlobals,
       nlGlobals,
       clearDataReady;
 
@@ -85,13 +85,13 @@ var ROOT = "",
   function appletReady() {
     var globalsStr;
     try {
-      nl_obj_panel     = applet.panel();                                           // org.nlogo.lite.Applet object
-      nl_obj_workspace = nl_obj_panel.workspace();                                 // org.nlogo.lite.LiteWorkspace
-      nl_obj_world     = nl_obj_workspace.org$nlogo$lite$LiteWorkspace$$world;     // org.nlogo.agent.World
-      nl_obj_program   = nl_obj_world.program();                                   // org.nlogo.api.Program
-      nl_obj_observer  = nl_obj_world.observer();
-      nl_obj_globals   = nl_obj_program.globals();
-      globalsStr = nl_obj_globals.toString();
+      nlObjPanel     = applet.panel();                                           // org.nlogo.lite.Applet object
+      nlObjWorkspace = nlObjPanel.workspace();                                 // org.nlogo.lite.LiteWorkspace
+      nlObjWorld     = nlObjWorkspace.org$nlogo$lite$LiteWorkspace$$world;     // org.nlogo.agent.World
+      nlObjProgram   = nlObjWorld.program();                                   // org.nlogo.api.Program
+      nlObjObserver  = nlObjWorld.observer();
+      nlObjGlobals   = nlObjProgram.globals();
+      globalsStr = nlObjGlobals.toString();
       nlGlobals = globalsStr.substr(1, globalsStr.length-2).split(",").map(function(e) { return stripWhiteSpace(e); });
       applet.ready = true;
       window.setInterval(buttonStatusCallback, 250);
@@ -137,11 +137,11 @@ var ROOT = "",
   }
 
   function nlCmdExecute(cmd) {
-    nl_obj_panel.commandLater(cmd);
+    nlObjPanel.commandLater(cmd);
   }
 
   function nlReadGlobal(global) {
-    return nl_obj_observer.getVariable(nlGlobals.indexOf(global));
+    return nlObjObserver.getVariable(nlGlobals.indexOf(global));
   }
 
   function nlDataExportModuleAvailable() {
