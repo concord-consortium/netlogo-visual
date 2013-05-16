@@ -173,17 +173,17 @@ var ROOT = "",
   }
 
   function exportDataReadyCallback() {
-    var modelDataDesc,
-        dataSeries,
-        runSeries,
+    var modelData,
+        modelDataStr,
         dgExportDone = nlDataReady();
     if (dgExportDone) {
       clearInterval(clearDataReady);
-      modelData = getExportedData();
+      modelData = JSON.parse(getExportedData());
+      modelDataStr = JSON.stringify(modelData, null, 2);
       if (exportedData) {
-        exportedData.textContent = modelData;
+        exportedData.textContent = modelDataStr;
         if (editor) {
-          editor.setValue(modelData);
+          editor.setValue(modelDataStr);
         }
       } else {
         console.log(modelData);
