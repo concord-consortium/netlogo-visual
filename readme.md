@@ -8,5 +8,5 @@ Ruby 1.9.3 or 2.0 and the Ruby Gem bundler are prerequisites for running a local
 
 1. Clone repo and cd into working dir
 2. `bundle install --binstubs`
-3. `bin/rackup server.ru`
+3. `bin/rackup config.ru`
 4. open http://localhost:9292/index.html
