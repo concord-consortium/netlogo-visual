@@ -10,8 +10,18 @@
 require 'csv'
 require 'json'
 require 'pp'
+require 'optparse'
 
-@filename = "exports/Designing a Safer Airbag (P)-4239-all-student-work.csv"
+opts = OptionParser.new
+arguments = opts.parse(ARGV)
+
+if arguments.empty?
+  @filename = "exports/Designing a Safer Airbag (P)-4239-all-student-work.csv"
+else
+  @filename = arguments[0]
+end
+
+# -----------------------------------
 
 def process_csv(filename)
   @import_lines = File.readlines(filename)
