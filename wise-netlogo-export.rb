@@ -105,10 +105,28 @@ RESPONSE_PREFIX = "Response #1: "
 
 @netlogo_step_data.each do |row|
   s = row[:student_work].gsub(RESPONSE_PREFIX, '')
+  if s[/"\{\\n/]
+    s = s.gsub('\\"', '"').gsub('\\n', "\n").gsub(/^\"/, '').gsub(/"$/, '')
+  end
   if s.empty?
     row[:student_work] = "nodata"
   else
-    row[:student_work] = JSON.parse(s)
+    @parsed_twice = false
+    begin
+      # debugger
+      row[:student_work] = JSON.parse(s)
+    rescue JSON::ParserError
+      # debugger
+      if @parsed_twice
+        row[:student_work] = "invalid JSON"
+      else
+        # deal with early generation of invalid JSON in inquirySummary field:
+        # "inquirySummary":[10 0.38 0.24 0.012 56.9 Yes false  false 0 [] [1] [] false 0 0 false 0 0 0 false 0]\n
+        s.gsub!(/"inquirySummary\":\[(.*?)\]\n/) { |m| "\"inquirySummary\":\"\[" + $1 + "\]\"\n" }
+        @parsed_twice = true
+        retry
+      end
+    end
   end
 end
 
