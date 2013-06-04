@@ -21,6 +21,8 @@ else
   @filename = arguments[0]
 end
 
+COMMIT_FORMAT_STR = "  %-24s%s"
+
 # -----------------------------------
 
 def process_csv(filename)
@@ -41,25 +43,86 @@ def process_csv(filename)
   lines.join
 end
 
-def computational_output_report(computational_outputs, runs)
-  puts "Computational outputs: #{computational_outputs.length}"
-  computational_outputs.each_index do |index|
-    output = computational_outputs[index]
-    print "#{output['label']}, min: #{output['min']}, max: #{output['max']} #{output['units']}: values("
-    print runs.collect { |run| run['computationalOutputs'][index] }.join(", ")
-    puts ")"
-  end
-  puts
-end
+INPUT_FORMAT_STR   = "  %-32s min: %-6s max: %-6s %-16s values: %s"
 
 def computational_input_report(computational_inputs, runs)
   puts
   puts "Computational inputs: #{computational_inputs.length}"
   computational_inputs.each_index do |index|
     input = computational_inputs[index]
-    print "#{input['label']}, min: #{input['min']}, max: #{input['max']} #{input['units']}: values("
-    print runs.collect { |run| run['computationalInputs'][index] }.join(", ")
-    puts ")"
+    values_string = runs.collect { |run| sprintf("%-8s", run['computationalInputs'][index]) }.join
+    puts sprintf(INPUT_FORMAT_STR, input['label'], input['min'], input['max'], input['units'], values_string)
+  end
+  puts
+end
+
+OUTPUT_FORMAT_STR   = "  %-32s min: %-6s max: %-6s %-16s values: %s"
+
+def computational_output_report(computational_outputs, runs)
+  puts "Computational outputs: #{computational_outputs.length}"
+  computational_outputs.each_index do |index|
+    output = computational_outputs[index]
+    values_string = runs.collect { |run| sprintf("%-8s", run['computationalOutputs'][index]) }.join
+    puts sprintf(OUTPUT_FORMAT_STR, output['label'], output['min'], output['max'], output['units'], values_string)
+  end
+  puts
+end
+
+REPRESENTATIONAL_FORMAT_STR   = "  %-32s                         %-16s values: %s"
+
+def representational_input_report(representational_inputs, runs)
+  puts "Representational inputs: #{representational_inputs.length}"
+  representational_inputs.each_index do |index|
+    input = representational_inputs[index]
+    values_string = runs.collect { |run| sprintf("%-8s", run['representationalInputs'][index]) }.join
+    puts sprintf(REPRESENTATIONAL_FORMAT_STR, input['label'], input['units'], values_string)
+  end
+  puts
+end
+
+STUDENT_FORMAT_STR   = <<-HEREDOC
+  %s:
+%s
+HEREDOC
+
+def student_input_report(student_inputs, runs)
+  puts "Student inputs: #{student_inputs.length}"
+  student_inputs.each_index do |index|
+    input = student_inputs[index]
+    values_string = runs.collect { |run| sprintf("    - %-32s\n", run['studentInputs'][index]) }.join
+    puts sprintf(STUDENT_FORMAT_STR, input['label'], values_string)
+  end
+  puts
+end
+
+def custom_inquiry_summary_report(runs)
+  puts "Custom Inquiry Summary:"
+  puts runs.collect {|r| r['inquirySummary'] }.join("\n")
+  puts
+end
+
+#
+# "modelInformation"=>
+#     [{"name"=>"airbags",
+#       "fileName"=>"airbags.v19b-include-modular.nlogo",
+#       "version"=>"v19b-include-modular"}]
+#
+
+MODEL_FORMAT_STR = <<-HEREDOC
+  name:      %s
+  filename:  %s
+  version:   %s
+HEREDOC
+
+def model_information_report(description)
+  puts
+  puts "Model Information:"
+  if description
+    model_info = description['modelInformation']
+    model_info = model_info[0] if model_info.class == Array
+    puts sprintf(MODEL_FORMAT_STR, model_info['name'], model_info['fileName'], model_info['version'])
+  else
+    puts "  not available"
   end
   puts
 end
@@ -162,32 +225,19 @@ NetLogo steps: #{nl_table.length}
       puts "Total time:     #{row[:time_spent_seconds]} s"
       runs = student_work['runs']
       description = student_work["description"]
+      model_information_report(description)
       if runs
         puts "Number of runs: #{runs.length}"
         computational_input_report(description["computationalInputs"], runs)
         computational_output_report(description["computationalOutputs"], runs)
-        puts
-        puts runs.collect {|r| r['inquirySummary'] }.join("\n")
-        puts
-        puts s
+        representational_input_report(description["representationalInputs"], runs)
+        student_input_report(description["studentInputs"], runs)
+        custom_inquiry_summary_report(runs)
         puts
       else
         puts "Number of runs: 0"
+        puts
       end
     end
   end
 end
-
-puts <<-HEREDOC
-
-Parsing:    #{@filename}
-Rows:       #{@table.count}
-Workgroups: #{@workgroups.length}
-
-Headers:    #{@headers}
-
-Step Types: #{@steptypes}
-
-NetLogo step sessions:    #{@netlogo_step_data.length}
-
-HEREDOC
