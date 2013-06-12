@@ -95,9 +95,20 @@ def student_input_report(student_inputs, runs)
   puts
 end
 
+RE = /^\[([0-9.]+) ([0-9.]+) ([0-9.]+) ([0-9.]+) ([0-9.]+) (Yes|No) (false|true) (.*?) (false|true) ([0-9.]+) (\[[0-9.]*\]) (\[[0-9.]*\]) \[(.*?)\] (false|true) ([0-9.]+) ([0-9.]+) (false|true) ([0-9.]+) ([0-9.]+) ([0-9.]+) (false|true) ([0-9.]+)\]/
+
 def custom_inquiry_summary_report(runs)
   puts "Custom Inquiry Summary:"
-  puts runs.collect {|r| r['inquirySummary'] }.join("\n")
+  summary = []
+  runs.each do |r|
+    summary << r['inquirySummary']
+  end
+  summary.each do |line|
+    unless line =~ /"/
+      line.gsub!(RE) { |m| "[#{$1} #{$2} #{$3} #{$4} #{$5} \"#{$6}\" #{$7} \"#{$8}\" #{$9} #{$10} #{$11} #{$12} [\"#{$13}\"] #{$14} #{$15} #{$16} #{$17} #{$18} #{$19} #{$20} #{$21} #{$22}]" }
+    end
+  end
+  puts summary.join("\n")
   puts
 end
 
