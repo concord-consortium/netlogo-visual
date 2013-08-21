@@ -309,7 +309,7 @@ INPUTBOX
 293
 229
 Run-data-word
-[[\"11:51:03.591 AM 10-Jun-2013\" \"airbags25.v1P.nlogo\"] [16 0.38 0.26 0.012 89.8 \"Yes\" false \"Make a small change from the last run\" false 18 [1] [1] [\"Last 1\"] true 2 3 true 1 3 2 false 8] [22 0.38 0.26 0.012 486.7 \"No\" true \"Make a small change from the last run\" false 19 [2] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 3] [18 0.38 0.26 0.012 91.9 \"Yes\" false \"Make a small change from the last run\" false 22 [3] [1] [\"Last 1\"] true 2 0 true 1 3 0 false 6] [30 0.38 0.26 0.012 1279.7 \"No\" true \"Test a minimum or maximum value\" false 16 [4] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 3] [20 0.4 0.26 0.012 150.2 \"No\" true \"Do a controlled comparison\" false 17 [5] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 3] [16 0.4 0.26 0.012 92.6 \"Yes\" false \"Explore/other\" false 0 [6] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 1]]
+[270 [10 0.38 0.24 0.012 56.9 0 0 0 0 4 [1] [1] [1] 0 0 0 0 0 0 0 0 3] [20 0.34 0.32 0.016 400.3 1 0 0 0 3 [2] [1 2 1] [1] 0 0 0 0 0 0 0 0 3]]\n
 1
 1
 String
