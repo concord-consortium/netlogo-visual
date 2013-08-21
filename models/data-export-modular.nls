@@ -155,6 +155,7 @@ globals [
   data-export:data-ready?
   data-export:computational-inputs
   data-export:computational-inputs-keys
+  data-export:computational-inputs-categorical-keys
   data-export:representational-inputs
   data-export:representational-inputs-keys
   data-export:representational-inputs-categorical-keys
@@ -184,6 +185,7 @@ to data-export:initialize [ setup ]
 
   set data-export:computational-inputs                     item 0 setup
   set data-export:computational-inputs-keys                [ "label" "units" "min" "max" ]
+  set data-export:computational-inputs-categorical-keys    [ "label" "units" "values" ]
 
   set data-export:representational-inputs                  item 1 setup
   set data-export:representational-inputs-keys             [ "label" "units" "min" "max" ]
@@ -250,7 +252,7 @@ to data-export:make-model-description
   let temp ""
   set temp (word temp "{\n")
   set temp (word temp data-export:section 4 "timeSeriesData"         data-export:times-series-keys            [ ] data-export:times-series-data ",\n" )
-  set temp (word temp data-export:section 4 "computationalInputs"    data-export:computational-inputs-keys    [ ] data-export:computational-inputs ",\n" )
+  set temp (word temp data-export:section 4 "computationalInputs"    data-export:computational-inputs-keys    data-export:computational-inputs-categorical-keys    data-export:computational-inputs ",\n" )
   set temp (word temp data-export:section 4 "representationalInputs" data-export:representational-inputs-keys data-export:representational-inputs-categorical-keys data-export:representational-inputs ",\n" )
   set temp (word temp data-export:section 4 "computationalOutputs"   data-export:computational-outputs-keys   data-export:computational-outputs-categorical-keys   data-export:computational-outputs ",\n" )
   set temp (word temp data-export:section 4 "studentInputs"          data-export:student-inputs-keys          [ ] data-export:student-inputs ",\n" )
