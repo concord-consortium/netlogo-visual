@@ -1,7 +1,7 @@
 ; Airbags24.v0
 ; Started July 2012
 ; Bob Tinker
-; March 23 2013
+; Aug 20 2013
 
 ; This code is based on a graphing utility that I have developed in NetLogo
 ; The software keeps separate "problem coordinates" and  "screen coordinates." 
@@ -109,7 +109,7 @@ globals [
   old-dummy-size
   dummy-crashed?   
   x-bag v-bag              ; position and velocity of the bag
-  
+  what-is-your-question  
   question-needed?           ; true if the user tries to run before entering the question
   used-slow-mo?            ; logical that is true if the slow-mo was used
   used-cursor?             ; logical that is true if the mouse ever entered the time-series graph
@@ -239,7 +239,7 @@ to initialize
   set old-pick-y-axis  vertical-axis-type
   set pick-y-axis vertical-axis-type
   set run-data [ ]      ; this global stores the results of runs. Each run creates a list of data 
-
+  
   setup-data-export     ;;; initialize the modular JSON data export functions
     
   ; initialize globals   
@@ -248,6 +248,7 @@ to initialize
   set airbag-size .24
   set distance-to-steering-wheel .38
   set time-to-fill-bag .014
+  set what-is-your-question ""  ; not used in this version
   
 ;  set grid-x-color white   ; the color of the grid lines for a position graph
 ;  set back-x-color 121  ; the color of the background for a position graph
@@ -482,34 +483,41 @@ end
 to handle-pick-graph-selector 
   if run-number = 0 [stop]  ; run number contains the number of the latest run. If 0, there are no runs. 
   erase-graphs
-  
-  set run-groups-used lput pick-graphs run-groups-used  ; save for research
-  
+  let n 0
   if pick-graphs = "Last 1" [
+    set n 1
     display-run run-number ]
   if pick-graphs = "Last 3" [
+    set n 2
     let i 1
     while [i <= run-number] [
       if i > (run-number - 4 ) [
         display-run i]
       set i i + 1 ]]
   if pick-graphs = "Last 10" [
+    set n 3
     let i 1
     while [i <= run-number] [
       if i > (run-number - 11 ) [
         display-run i]
       set i i + 1 ]]
   if pick-graphs = "All" [
+    set n 4
     let i 1
     while [i <= run-number][
       display-run i
       set i i + 1 ]]
+  if pick-graphs = "None" [set n 5]
   if pick-graphs = "Green Only" [
+    set n 6
     display-runs-colored green]
   if pick-graphs = "Red Only" [
+    set n 7
     display-runs-colored red]
   if pick-graphs = "Yellow Only" [
+    set n 8
     display-runs-colored yellow]
+  set run-groups-used lput n run-groups-used  ; save for research
 end
 
 to support-mouse      ; first ask whether the mouse is in one of the grids
@@ -1069,10 +1077,17 @@ to run-airbag ; computes and draws the position or velocity graphs of the airbag
   
   ; save the variables available at the end of the run for reporting. 
   ; later, these will be added to data about student use of analysis tools. 
-  set temp-data (list car-speed distance-to-steering-wheel airbag-size time-to-fill-bag a-max-g dummy-status) 
-  set temp-data sentence temp-data (list dummy-crashed? the-question slow-mo?)
+  set temp-data list car-speed distance-to-steering-wheel
+  set temp-data lput airbag-size temp-data 
+  set temp-data lput time-to-fill-bag temp-data 
+  set temp-data lput a-max-g temp-data 
+  set temp-data lput dummy-status-number temp-data 
+  set temp-data lput logic-number dummy-crashed? temp-data
+  set temp-data lput the-question-number temp-data
+  set temp-data lput logic-number slow-mo? temp-data
+  update-run-data                              ; this generates data for research that will be exported in the list run-data   
+  
   reset-timer ; begin timing how long the student analyzes data
-  update-run-data                              ; this generates data for research that will be exported in the list run-data 
 
   ; now update RunSeries (used to generate student logs)
   update-run-series
@@ -1080,6 +1095,7 @@ to run-airbag ; computes and draws the position or velocity graphs of the airbag
   ; get ready for the next run
   set what-is-your-goal? ""
 end
+
 
 ;::::::::::::::::::::::::::::::::::::::::::::::::::;;
 ;;;;;;;;; support for dynamics calcs  ;;;;;;;;;;;;;;;
@@ -1415,21 +1431,21 @@ to update-run-data
   ; called at the end of a run every time some subsequent student action is detected
   ; run-data is a list of lists, each of which is all the data from a run, stored in order of the runs
   ; Contents of each run's data:
-  ;   0. car-speed 
-  ;   1. distance-to-steering-wheel 
-  ;   2. airbag-size 
-  ;   3. time-to-fill-bag 
+  ;   0. car-speed (a number)
+  ;   1. distance-to-steering-wheel(a number)
+  ;   2. airbag-size (a number)
+  ;   3. time-to-fill-bag (a number)
   ;   4. a-max-g (maximum acceleration in g units)
-  ;   5. dummy-status (yes, no, maybe)
-  ;   6. dummy-crashed? logical
-  ;   7. the question selected by the student
-  ;   8. slow-mo? Logical. True if the run ended with slo-mo? true
+  ;   5. dummy-status (yes, no, maybe)  (a number for which 0-->yes 1-->no, and 2-->maybe)
+  ;   6. dummy-crashed? logical  (a number 0 means false and 1 means true)
+  ;   7. the question selected by the student  (a number, the index to the choices)
+  ;   8. slow-mo? Logical. True if the run ended with slo-mo? (a number 0 means false and 1 means true)
   ;   The variables above are computed at the end of the run and are stored as a list in current-run-data
   ;   The next set of variables are derived from user actions. This method is called every time one changes
-  ;   9. duration of the anaysis, in seconds  ; timer is set to zero at the end of a run and read just before beginning the next 
+  ;   9. duration of the anaysis, in seconds  ; timer is set to zero at the end of a run and read just before beginning the next (a number)
   ;  10. prior-runs-viewed ( a list of run numbers viewed)
   ;  11. graph-type-used (a list consisting of 1s and 2s, 1 for position, 2 for velocity)
-  ;  12. run-groups-used ( a list of the texts selected using the pick-graph function)
+  ;  12. run-groups-used ( a list of the index to the texts selected using the pick-graph function)
   ;  13. used-cursor? (true false) true if the mouse ever entered the time-series graph
   ;  14. cursor-times The number of times the mouse entered the time series graph area when only one graph was showing
   ;  15. cursor-time The total time the mouse was in the time-series graph in seconds when only one graph was showing
@@ -1440,18 +1456,19 @@ to update-run-data
   ;  20. question-needed? True if the user tried to run or change sliders but had not entered a question
   ;  21. activity-counter. An overall measure of student interaction--the number of actions a student takes
 
-  set current-run-data lput round timer temp-data    ; 9 temp-data stores the data on sliders etc. used in calculating the run
-  set current-run-data lput prior-runs-viewed current-run-data    ; 10 prior-runs is a list, so needs to be tacked on separately
-  set current-run-data lput graph-type-used current-run-data      ; 11
+  let current-run-data temp-data                                  ; temp-data stores the data on sliders etc. used in the run
+  set current-run-data lput round timer current-run-data          ; 9 
+  set current-run-data lput prior-runs-viewed current-run-data    ; 10 prior-runs is a list
+  set current-run-data lput graph-type-used current-run-data      ; 11 
   set current-run-data lput run-groups-used current-run-data      ; 12
-  set current-run-data lput used-cursor? current-run-data         ; 13
+  set current-run-data lput logic-number used-cursor? current-run-data         ; 13
   set current-run-data lput cursor-times current-run-data         ; 14
   set current-run-data lput round cursor-time current-run-data    ; 15
-  set current-run-data lput used-pointer? current-run-data        ; 16
+  set current-run-data lput logic-number used-pointer? current-run-data        ; 16
   set current-run-data lput pointer-times current-run-data        ; 17
   set current-run-data lput round pointer-time current-run-data   ; 18
   set current-run-data lput hover-times current-run-data          ; 19
-  set current-run-data lput question-needed? current-run-data     ; 20
+  set current-run-data lput logic-number question-needed? current-run-data     ; 20
   set current-run-data lput activity-counter current-run-data  ; 21
     ; at this point, current-run-data contains everything we want to know about the run and student analysis just updated
   set activity-counter activity-counter + 1 ; this is set to zero at the start of a run
@@ -1461,6 +1478,55 @@ to update-run-data
     set run-data bl run-data ]     ; remove the old data
     set run-data lput current-run-data run-data  ; substitute the more current run data in current-run-data
     set run-data-word (word run-data)            ; convert to a text string
+end
+
+to-report dummy-status-number  ; converts dummy status to a number
+  if dummy-status = "Yes" [report 0]
+  if dummy-status = "No" [report 1]
+  if dummy-status = "Maybe" [report 2]
+end
+
+to-report dummy-status-str [n]  ; converts dummy status to a string
+  if n = 0 [report "Yes"]
+  if n = 1 [report "No"]
+  if n = 2 [report "Maybe"]
+end
+
+to-report the-question-number  ; converts the selected question to a number
+  if what-is-your-question = "Test a minimum of maximum value" [report 1]
+  if what-is-your-question = "Make a small change from the the last run" [report 2]
+  if what-is-your-question = "Fill a gap in my results" [report 3]
+  if what-is-your-question = "Do a controlled comparison" [report 4]
+  if what-is-your-question = "Explore/other" [report 5]
+  report 0
+end
+
+to-report the-question-str [n]   ; converts the selected question number to a string
+  if n = 1 [report "Test a minimum of maximum value" ]
+  if n = 2 [report "Make a small change from the the last run" ]
+  if n = 3 [report "Fill a gap in my results" ]
+  if n = 4 [report "Do a controlled comparison" ]
+  if n = 5 [report "Explore/other"]
+  report ""
+end 
+
+to-report pick-graph-str [n]
+  if n = 1 [report "Last 1"]
+  if n = 2 [report "Last 3"]
+  if n = 3 [report "Last 10"]
+  if n = 4 [report "All"]
+  if n = 5 [report "Blue Only (survived)"]
+  if n = 6 [report "Orange Only (maybe)"]
+  if n = 7 [report "Magenta Only (died)"]
+  report "" 
+end
+
+to-report logic-number [logical]  ; converts true/false into 1/0
+  ifelse logical [report 1] [report 0 ]
+end
+
+to-report logic-str [n]   ; converts 0/1 to true / false
+  ifelse n = 0 [report false][report true]
 end
 
 to show-results       ; generates a line of text in the output box and point in parameter space summarizing a run
@@ -1527,7 +1593,7 @@ to munch      ; computes and reports patterns from run-data
   ; run-data has a list of date and time and program filename as its first element. 
   ; Strip it out (I do this so that EVERYTHING is in run-data -- so it could be stored and munched outside this program.)
   ;  set date&time first first run-data
-  let rd bf run-data 
+  let rd fixup bf run-data   ; I've had to convert run data to only numbers, fixup restores the original list
   ; rd (a working version of run-data is now a list of lists each containing the following data of a run 
   ;  (the run number is the position of the data in the list) (item + 1)
   
@@ -1645,7 +1711,38 @@ to munch      ; computes and reports patterns from run-data
    output-print item 5 current-run
    set i i + 1 ]
 end 
-  
+
+to-report fixup [run-numbers]  ; run-numbers is run data converted into pure numbers. 
+  ; run-numbers is a digital version of run-data. It is a list of data from runs. Each run has 21 items
+  ; this function restores the data in the runs. All this encoding and decoding is needed so that the stored run data has no quote characters.
+  let runs-restored []      ; this will be a list of items, one for each rund
+  while [length run-numbers > 0][ ; repeat the following for each run
+    let run-restored []       ; note the singular. This will contain a list of 21 items for one run
+    let one-run first run-numbers   ; one-run is pure numerical--- a list of numbers and lists of numbers
+    set run-numbers bf run-numbers  ; split off the frist run (one-run) from run-numbers 
+    let i 0 
+    repeat length one-run [         ; now process each of the 21 elements in one-run
+      let element first one-run     ; split off the first element
+      set one-run bf one-run
+      ; now, check for any elements that require special decoding
+      if i = 5 [set element dummy-status-str element]    ; converts the number 'element' into a string that contains Yes, No, or Maybe
+      if i = 6 [set element logic-str element]           ; converts element into true or false
+      if i = 7 [set element the-question-str element] ; converts element into one of the questions that the user picked
+      if i = 8 [set element logic-str element]           ; converts element into true or false
+      if i = 12 [                                        ; this could be an empty list or a list of any number of numbers corresponding to graphs picked by user
+        if not empty? element [                          ; process each item in element, converting it using pick-graph-str
+          let temp []                                    ; temp will be the list of strings
+          while [length element > 0 ][
+            set temp lput (pick-graph-str first element) temp
+            set element bf element ]
+          set element temp]]
+      if i = 13 or i = 16 or i = 20 [set element logic-str element]           ; converts element into true or false
+      set run-restored lput element run-restored 
+      set i i + 1 ]
+    set runs-restored lput run-restored runs-restored ]
+  report runs-restored
+end
+
 to further-analysis     ; not yet implemented....
   ; 1 car speed
   ; 2 distance from steering wheel
