@@ -3,6 +3,7 @@
 ; Bob Tinker
 ; Aug 20 2013
 
+
 ; This code is based on a graphing utility that I have developed in NetLogo
 ; The software keeps separate "problem coordinates" and  "screen coordinates." 
 ; problem coordinates can be any size and range. They are designated by x and y
@@ -17,6 +18,8 @@
 __includes [ "data-export-modular.nls" ]
 
 globals [
+  version-number
+  
   ; author globals
   grid-x-Color     ; the color of the grid in the main graph for the position graph
   back-x-Color     ; the color of the background in the main graph for the position graph
@@ -89,7 +92,6 @@ globals [
   graph-type-used         ; will become a list of the display types used
   prior-runs-viewed      ; a list of all graphs other than the current one that were viewed during one run
   temp-data              ; stores part of the data from a run calculated at the end of the run, but stored only at the start of the next run
-  date&time
   the-question           ; the question that the student is exploring
   starting-up?
   variables-locked?      ; if true, the user cannot change variabes or use the 
@@ -230,9 +232,8 @@ to show-start-screen
 end
 
 to initialize
+  set version-number 27.0
   initialize-author-tools
-  set date&time date-and-time   ; record the starting time for this set of runs
-  set filename "airbags24.v0.nlogo"
   output-print (word "Run Survives   MA    Car speed   Distance  Bag size  Fill time")
   set run-number 0
   set vertical-axis-type "Position (m)"
@@ -1477,7 +1478,7 @@ to update-run-data
   if length run-data = run-number and run-number > 0  [  ; if run-data already has data from a previous update to this run
     set run-data bl run-data ]     ; remove the old data
     set run-data lput current-run-data run-data  ; substitute the more current run data in current-run-data
-    set run-data-word (word run-data)            ; convert to a text string
+    set run-data-word (word fput version-number run-data)            ; convert to a text string with version number first
 end
 
 to-report dummy-status-number  ; converts dummy status to a number
@@ -1581,12 +1582,12 @@ to-report pad [txt n]; Pads out the text txt to be n spaces long, putting spaces
   report txt
 end
 
-to leave     ; used when exiting this model
+;to leave     ; used when exiting this model
 ;  update-run-data      ; adds the final run's data to run-data
-  set run-data fput (list date&time filename) run-data     ; stick the date and time at the front of run-data (this is a kind of ID for the series of runs)
-  set run-data-word (word run-data)  ; the final data is converted into text
+;  set run-data fput version-number run-data     ; stick the date and time at the front of run-data (this is a kind of ID for the series of runs)
+;  set run-data-word (word run-data)  ; the final data is converted into text
 ;  munch      ; goes through run-data looking for patterns and generates a report.
-end 
+;end 
 
 to munch      ; computes and reports patterns from run-data
   ; right now, the resulting report is in the output box, but much could be a separate program that has run-data as its input
