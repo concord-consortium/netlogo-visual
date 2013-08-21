@@ -6,10 +6,15 @@
 
 to munch      ; computes and reports patterns from run-data
   clear-output
-  let rd fixup read-from-string run-data   ; rd is the working version of run-data
-  ; run-data has date and time as its first element. Strip it out (I do this so that EVERYTHING is in run-data -- so it could be stored and munched outside this program.)
-  let date&time first rd
-  set rd bf rd
+  let run-data read-from-string run-data-word ; since run-data-word has the form "[...]" run-data becomes a list
+  let version-number first run-data
+  if int version-number != 27 [user-message "These data are not from version 27.x. There may be problems"]
+  ; run-data should consist of a list of n + 1 items in pure numerical format. The first is just the version number
+  ; all other items are data from n runs. 
+  ; The original way I saved and analyzed data included quoted strings and even a list of strings. fixup restores this format
+  let rd fixup bf run-data   ; rd is the working version of run-data
+  ; run-data has a version number as its first element. Strip it out -- so it could be checked
+
   ; rd is now a list of lists each containing the following data of a run (the run number is the position of the data in the list) (item + 1)
   
   ;   0. car-speed 
@@ -36,7 +41,7 @@ to munch      ; computes and reports patterns from run-data
   ;  21. activity-counter. An overall measure of student interaction--the number of actions a student takes
 
 
-  output-print word "Report     " date&time
+  output-print word "Using version     " version-number
   output-print word "Number of runs: " length rd
   compute-boundaries rd; first, computer and report the range of values used for each variable 
   show-results-by-run rd ; now show results for each run
@@ -303,7 +308,7 @@ INPUTBOX
 10
 293
 229
-Run-data
+Run-data-word
 [[\"11:51:03.591 AM 10-Jun-2013\" \"airbags25.v1P.nlogo\"] [16 0.38 0.26 0.012 89.8 \"Yes\" false \"Make a small change from the last run\" false 18 [1] [1] [\"Last 1\"] true 2 3 true 1 3 2 false 8] [22 0.38 0.26 0.012 486.7 \"No\" true \"Make a small change from the last run\" false 19 [2] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 3] [18 0.38 0.26 0.012 91.9 \"Yes\" false \"Make a small change from the last run\" false 22 [3] [1] [\"Last 1\"] true 2 0 true 1 3 0 false 6] [30 0.38 0.26 0.012 1279.7 \"No\" true \"Test a minimum or maximum value\" false 16 [4] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 3] [20 0.4 0.26 0.012 150.2 \"No\" true \"Do a controlled comparison\" false 17 [5] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 3] [16 0.4 0.26 0.012 92.6 \"Yes\" false \"Explore/other\" false 0 [6] [1] [\"Last 1\"] false 0 0 false 0 0 0 false 1]]
 1
 1
