@@ -1133,6 +1133,7 @@ end
 
 to update-inquiry-summary [ data-series ]
   data-export:update-inquiry-summary data-series
+  data-export:make-model-data
 end
 
 ; The following are little utilities required to encode data into numbers for later decoding in munch
@@ -2728,7 +2729,7 @@ Polygon -7500403 true true 195 75 225 105 105 225 75 195
 Polygon -7500403 true true 75 105 105 75 225 195 195 225
 
 @#$#@#$#@
-NetLogo 5.0.2
+NetLogo 5.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
