@@ -59,7 +59,7 @@ to data-export:make-model-data
   set data-export:data-ready? false
   let temp ""
   set temp (word temp "{\n")
-  set temp (word temp "  \"runs\": "        data-export:inquiry-summary "\n")
+  set temp (word temp "  \"runs\": \"" data-export:inquiry-summary "\"\n")
   set temp (word temp "}\n")
   set data-export:model-data temp
   set data-export:data-ready? true
