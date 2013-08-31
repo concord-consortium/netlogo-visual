@@ -69,6 +69,7 @@ to data-export:update-inquiry-summary [ new-inquiry-summary ]
   ifelse is-string? new-inquiry-summary
     [ set data-export:inquiry-summary new-inquiry-summary ]
     [ set data-export:inquiry-summary ( word new-inquiry-summary ) ]
+   set data-export:data-available? true
 end
 
 to-report data-export:section [ indent name keys categorical-keys dataset epilog]
