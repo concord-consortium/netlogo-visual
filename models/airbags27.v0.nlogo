@@ -1086,13 +1086,14 @@ to run-airbag ; computes and draws the position or velocity graphs of the airbag
   set temp-data lput logic-number dummy-crashed? temp-data
   set temp-data lput the-question-number temp-data
   set temp-data lput logic-number slow-mo? temp-data
-  update-run-data                              ; this generates data for research that will be exported in the list run-data   
-  
-  reset-timer ; begin timing how long the student analyzes data
 
   ; now update RunSeries (used to generate student logs)
   update-run-series
   
+  update-run-data                              ; this generates data for research that will be exported in the list run-data   
+  
+  reset-timer ; begin timing how long the student analyzes data
+
   ; get ready for the next run
   set what-is-your-goal? ""
 end
@@ -3042,7 +3043,7 @@ Polygon -7500403 true true 195 75 225 105 105 225 75 195
 Polygon -7500403 true true 75 105 105 75 225 195 195 225
 
 @#$#@#$#@
-NetLogo 5.0.3
+NetLogo 5.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
