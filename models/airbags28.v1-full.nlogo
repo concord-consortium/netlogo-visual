@@ -1113,8 +1113,7 @@ to run-airbag ; computes and draws the position or velocity graphs of the airbag
     ;   5. a-max-g (maximum acceleration in g units)
     ;   6. dummy-status
     ;   7. dummy-crashed? logical 
-    set temp-data list 666 car-speed
-    ;set temp-data list round timer car-speed                              ;            0 and 1
+    set temp-data list round timer car-speed                              ;            0 and 1
     set temp-data lput distance-to-steering-wheel temp-data                            ;2
     set temp-data lput airbag-size temp-data                                           ;3
     set temp-data lput time-to-fill-bag temp-data                                      ;4
