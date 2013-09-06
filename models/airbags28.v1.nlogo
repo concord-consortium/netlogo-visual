@@ -1761,6 +1761,19 @@ to initialize-author-tools   ; in a previous version, these variables were set i
   set horizontal-axis "Distance to steering wheel"
   
 end
+
+to save-data  ; writes run-data-word to disk in the current folder
+  if file-exists? "test.txt" [
+;    file-open "test.txt"
+    file-delete "test.txt"
+    file-close  ]
+  file-open "test.txt"
+  file-write (word run-data )
+  file-close
+  file-open "test.txt"
+  show file-read  
+  file-close  
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 234
@@ -1815,7 +1828,7 @@ Car-speed
 Car-speed
 2
 30
-19
+16
 1
 1
 m/s
@@ -1830,7 +1843,7 @@ Distance-to-steering-wheel
 Distance-to-steering-wheel
 0.1
 .5
-0.37
+0.5
 .01
 1
 m
@@ -1892,7 +1905,7 @@ CHOOSER
 Pick-Graphs
 Pick-Graphs
 "Last 1" "Last 3" "Last 10" "All" "None" "Blue Only (survived)" "Orange Only (maybe)" "Magenta Only (died)"
-3
+0
 
 BUTTON
 56
@@ -1989,6 +2002,23 @@ TEXTBOX
 acceleration survival limit = about 125 g
 14
 0.0
+1
+
+BUTTON
+256
+594
+349
+627
+NIL
+Save-data
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
