@@ -1828,7 +1828,7 @@ Car-speed
 Car-speed
 2
 30
-16
+21
 1
 1
 m/s
@@ -1843,7 +1843,7 @@ Distance-to-steering-wheel
 Distance-to-steering-wheel
 0.1
 .5
-0.5
+0.38
 .01
 1
 m

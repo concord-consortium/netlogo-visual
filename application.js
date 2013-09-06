@@ -64,7 +64,6 @@ var ROOT = "",
           '     archive="' + ACTUAL_ROOT + '/netlogo/NetLogoLite.jar"',
           '     MAYSCRIPT="true">',
           '  <param name="DefaultModel" value="' + interactive.model.url + '"/>',
-          // '  <param name="java_arguments" value="-Djnlp.packEnabled=true">',
           '  <param name="MAYSCRIPT" value="true"/>',
           '  Your browser is completely ignoring the applet tag!',
           '</applet>'].join('\n');
@@ -74,9 +73,7 @@ var ROOT = "",
         applet.ready = false;
         applet.checked_more_than_once = false;
         var self = this;
-        window.setTimeout (function() {
-          appletReady();
-        }, 250);
+        window.setTimeout(appletReady, 250);
       }
       interactiveDefinitionLoaded.resolve();
     });
@@ -84,6 +81,7 @@ var ROOT = "",
 
   function appletReady() {
     var globalsStr;
+    applet.ready = false;
     try {
       nlObjPanel     = applet.panel();                                           // org.nlogo.lite.Applet object
       nlObjWorkspace = nlObjPanel.workspace();                                 // org.nlogo.lite.LiteWorkspace
@@ -93,10 +91,17 @@ var ROOT = "",
       nlObjGlobals   = nlObjProgram.globals();
       globalsStr = nlObjGlobals.toString();
       nlGlobals = globalsStr.substr(1, globalsStr.length-2).split(",").map(function(e) { return stripWhiteSpace(e); });
-      applet.ready = true;
-      window.setInterval(buttonStatusCallback, 250);
+      if (nlGlobals.length > 1) {
+        applet.ready = true;
+      }
     } catch (e) {
-      applet.checked_more_than_once = window.setTimeout(function() { appletReady(); }, 250);
+      // applet is not ready
+    }
+
+    if (applet.ready) {
+      window.setInterval(buttonStatusCallback, 250);
+    } else {
+      applet.checked_more_than_once = window.setTimeout(appletReady, 250);
     }
     return applet.ready;
   }
