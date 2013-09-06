@@ -471,40 +471,47 @@ to act-on-changes   ; look for changes in the sliders and selectors and takes ap
     beep 
 ;    update-run-data
     ask messages with [number = 0 ] [st]]  ; show the 'select question' message
-
 end
 
 to handle-pick-graph-selector 
   if run-number = 0 [stop]  ; run number contains the number of the latest run. If 0, there are no runs. 
   erase-graphs
   
-  set run-groups-used lput pick-graphs run-groups-used  ; save for research
-  
+  let pick-graphs-num 0
   if pick-graphs = "Last 1" [
+    set pick-graphs-num 1
     display-run run-number ]
   if pick-graphs = "Last 3" [
+    set pick-graphs-num 2
     let i 1
     while [i <= run-number] [
       if i > (run-number - 3 ) [
         display-run i]
       set i i + 1 ]]
   if pick-graphs = "Last 10" [
+    set pick-graphs-num 3
     let i 1
     while [i <= run-number] [
       if i > (run-number - 10 ) [
         display-run i]
       set i i + 1 ]]
   if pick-graphs = "All" [
+    set pick-graphs-num 4
     let i 1
     while [i <= run-number][
       display-run i
       set i i + 1 ]]
+  if pick-graphs = "None" [set pick-graphs-num 5]
   if pick-graphs = "Blue Only (survived)" [
+    set pick-graphs-num 6
     display-runs-colored blue]
   if pick-graphs = "Orange Only (maybe)" [
+    set pick-graphs-num 7
     display-runs-colored orange]
   if pick-graphs = "Magenta Only (died)" [
     display-runs-colored magenta]
+    set pick-graphs-num 8
+  set run-groups-used lput pick-graphs-num run-groups-used  ; save for research
 end
 
 to support-mouse      ; first ask whether the mouse is in one of the grids
@@ -2158,7 +2165,7 @@ CHOOSER
 What-is-your-goal?
 What-is-your-goal?
 "" "Test a minimum or maximum value" "Make a small change from the last run" "Fill a gap in my results" "Do a controlled comparison" "Explore/other"
-1
+0
 
 BUTTON
 235
